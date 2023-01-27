@@ -1,0 +1,1 @@
+In relationtship with [[Tom Warrick Gobble]]. They argue a lot. She is jealous about [[Marissa Diaz]].

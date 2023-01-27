@@ -1,0 +1,1 @@
+Friends w/ : [[Beth Olsson]], [[Daisy Griffiths]] they usually ride horse together.
