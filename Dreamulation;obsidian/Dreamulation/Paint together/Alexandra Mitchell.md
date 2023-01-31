@@ -1,1 +1,0 @@
-Friends w/ : [[Tom Warrick Gobble]], [[Liliana Murphy]] they usually paint together.

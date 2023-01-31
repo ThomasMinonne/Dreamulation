@@ -1,1 +1,0 @@
-Friends w/ : [[Tom Warrick Gobble]], [[Alexandra Mitchell]] they usually paint together.

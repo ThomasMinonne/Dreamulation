@@ -1,1 +1,0 @@
-Cuthbert's best friend.
