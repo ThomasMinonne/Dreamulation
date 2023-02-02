@@ -1,1 +1,0 @@
-Friends w/ : [[Tom Warrick Gobble]], they work together as health centre receptionist.

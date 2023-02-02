@@ -1,1 +1,0 @@
-An artist brother of [[Beth Olsson]].

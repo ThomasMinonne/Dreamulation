@@ -1,1 +1,0 @@
-Absent doctor mother of [[Charley Pearl Powell]].
