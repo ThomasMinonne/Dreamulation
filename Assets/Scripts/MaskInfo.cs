@@ -7,6 +7,7 @@ public class MaskInfo : MonoBehaviour
 {
 	public string personName;
 	public bool guilty = false;
+	public bool guiltyAssistant = false;
 	public int tension_level;
 	public List<GameObject> friends = new List<GameObject>();
 	public List<GameObject> foes = new List<GameObject>();
@@ -30,6 +31,10 @@ public class MaskInfo : MonoBehaviour
 	
 	public void setGuilty(){
 		guilty = true;
+	}
+	
+	public void setGuiltyAssistant(){
+		guiltyAssistant = true;
 	}
 	
 	public void setFriends(string toSet){
