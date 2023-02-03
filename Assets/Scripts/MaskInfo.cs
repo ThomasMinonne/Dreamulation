@@ -11,8 +11,8 @@ public class MaskInfo : MonoBehaviour
 	public int tension_level;
 	public List<GameObject> friends = new List<GameObject>();
 	public List<GameObject> foes = new List<GameObject>();
-	private TMP_Text friendsProText;
-	private TMP_Text foesProText;
+	public TMP_Text friendsProText;
+	public TMP_Text foesProText;
 	
 	// Start is called before the first frame update
     void Start()
@@ -38,12 +38,12 @@ public class MaskInfo : MonoBehaviour
 	}
 	
 	public void setFriends(string toSet){
-		friendsProText = GameObject.Find("Friends").GetComponent<TMP_Text>();
+		//friendsProText = GameObject.Find("Friends").GetComponent<TMP_Text>();
 		friendsProText.text = toSet;
 	}
 	
 	public void setFoes(string toSet){
-		foesProText = GameObject.Find("Grudges").GetComponent<TMP_Text>();
+		//foesProText = GameObject.Find("Grudges").GetComponent<TMP_Text>();
 		foesProText.text = toSet;
 	}
 }

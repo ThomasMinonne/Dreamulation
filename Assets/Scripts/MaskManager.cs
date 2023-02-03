@@ -91,7 +91,18 @@ public class MaskManager : MonoBehaviour
         }
     }
 	
+	private void shuffleList(List<GameObject> alpha){
+		for (int i = 0; i < alpha.Count; i++) {
+			GameObject temp = alpha[i];
+			int randomIndex = Random.Range(i, alpha.Count);
+			alpha[i] = alpha[randomIndex];
+			alpha[randomIndex] = temp;
+		}
+	}
+	
 	public void setRelationships(){
+		GameObject Cuthbert = null;
+		GameObject CuthbertAssistant = null;
 		for(int i = 0; i < masks.Length; i++){
 			//Setting Friends to all the masks
 			for(int j = 0; j < friendsNumber; j++){
@@ -99,28 +110,29 @@ public class MaskManager : MonoBehaviour
 				if(temp >= masks.Length) { temp -= masks.Length; }
 				masks[i].GetComponent<MaskInfo>().friends.Add(masks[temp]);
 				if(masks[i].GetComponent<MaskInfo>().personName == "Cuthbert Humble" && !guiltyAssistantSetted){
-					string parsingNameCuthbert = masks[i].GetComponent<MaskInfo>().personName;
-					int parsingNameCuthbertIndex = masks[i].GetComponent<MaskInfo>().personName.Length;
-					parsingNameCuthbert.Substring(0, parsingNameCuthbertIndex - 2);
-					string parsingNamefriend = masks[temp].GetComponent<MaskInfo>().personName;
-					int parsingNamefriendIndex = masks[temp].GetComponent<MaskInfo>().personName.Length;
-					parsingNamefriend.Substring(0, parsingNamefriendIndex - 2);
-					if(parsingNameCuthbert == parsingNamefriend){
+					Cuthbert = masks[i];
+					CuthbertAssistant = masks[temp];
+					string[] parsingNameCuthbert = Chop(masks[i].GetComponent<MaskInfo>().name, masks[i].GetComponent<MaskInfo>().name.Length - 2);
+					string[] parsingNamefriend = Chop(masks[temp].GetComponent<MaskInfo>().name, masks[temp].GetComponent<MaskInfo>().name.Length - 2);
+					Debug.Log(parsingNameCuthbert[0]); 
+					Debug.Log(parsingNamefriend[0]);
+					if(parsingNameCuthbert[0] == parsingNamefriend[0]){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
+						Debug.Log("MASCHERA");
 					}//Condividono la maschera
 					else {
-						parsingNameCuthbert.Substring(parsingNameCuthbertIndex - 2, parsingNameCuthbertIndex);
-						parsingNamefriend.Substring(parsingNamefriendIndex - 2, parsingNamefriendIndex);
-						if(parsingNameCuthbert == parsingNamefriend){
+						if(parsingNameCuthbert[1] == parsingNamefriend[1]){
 							masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 							guiltyAssistantSetted = true;
+							Debug.Log("SIMBOLO");
 						}//condividono il simbolo
 					}
 					if(!guiltyAssistantSetted){
 						//non condividono nulla
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
+						Debug.Log("NULLA");
 					}
 				}
 			}
@@ -130,115 +142,41 @@ public class MaskManager : MonoBehaviour
 				if(temp >= masks.Length) { temp -= masks.Length; }
 				masks[i].GetComponent<MaskInfo>().foes.Add(masks[temp]);
 			}
+			shuffleList(masks[i].GetComponent<MaskInfo>().friends);
+			shuffleList(masks[i].GetComponent<MaskInfo>().foes);
 		}
+		setCuthbertRelationship(Cuthbert, CuthbertAssistant);
 	}
 	
-	private void setCuthbertRelationship(){
-		GameObject tempObj = getMaskInfo("Cuthbert Humble");
-		int maskAssociation = Random.Range(0, 1);
-		List<GameObject> numbfriends = new List<GameObject>();
-		if(maskAssociation == 0){	
-			string parsingName = tempObj.name;
-			parsingName.Substring(0, parsingName.Length - 2);
-			GameObject tempFriend1 = getMaskInfo(parsingName + "_1");
-			GameObject tempFriend2 = getMaskInfo(parsingName + "_2");
-			GameObject tempFriend3 = getMaskInfo(parsingName + "_3");
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend1)){numbfriends.Add(tempFriend1);}
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend2)){numbfriends.Add(tempFriend2);}
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend3)){numbfriends.Add(tempFriend3);}
-			if(numbfriends.Count > 1){
-				int friend = Random.Range(0, numbfriends.Count-1);
-				if(friend == 1)tempFriend1.GetComponent<MaskInfo>().setGuiltyAssistant();
-				if(friend == 2)tempFriend2.GetComponent<MaskInfo>().setGuiltyAssistant();
-				if(friend == 3)tempFriend3.GetComponent<MaskInfo>().setGuiltyAssistant();
-			}
-			else{
-				//prendo il primo amico di Cutberth e lo tolgo
-				//prendo il primo amico di tempFriend e lo tolgo
-				//linko Cutberth e tempFriend
-				//linko i due amici tolti
-				GameObject toLink;
-				GameObject toLink2;
-				int friend = Random.Range(1, 3);
-				if(friend == 1){
-					toLink = tempFriend1.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend1;
-					tempFriend1.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-				if(friend == 2){
-					toLink = tempFriend2.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend2;
-					tempFriend2.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-				if(friend == 3){
-					toLink = tempFriend3.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend3;
-					tempFriend3.GetComponent<MaskInfo>().friends[0] = tempObj;
+	private void setCuthbertRelationship(GameObject Cuthbert, GameObject CuthbertAssistant){	
+		GameObject toLink2 = CuthbertAssistant.GetComponent<MaskInfo>().friends[0];
+		if(!CuthbertAssistant.GetComponent<MaskInfo>().friends.Contains(Cuthbert)){
+			CuthbertAssistant.GetComponent<MaskInfo>().friends.Add(Cuthbert);
+			CuthbertAssistant.GetComponent<MaskInfo>().friends.RemoveAt(0);
+			if(CuthbertAssistant.GetComponent<MaskInfo>().foes.Contains(Cuthbert)){
+				for(int j = 0; j < foesNumber; j++){
+					if(CuthbertAssistant.GetComponent<MaskInfo>().foes[j] == Cuthbert){
+							CuthbertAssistant.GetComponent<MaskInfo>().foes.Add(toLink2);
+					}
 				}
 			}
 		}
-		else {
-			string parsingName = tempObj.name;
-			parsingName.Substring(parsingName.Length - 2, parsingName.Length);
-			Debug.Log(parsingName);
-			GameObject tempFriend1 = getMaskInfo("Blue" + parsingName);
-			GameObject tempFriend2 = getMaskInfo("Purple" + parsingName);
-			GameObject tempFriend3 = getMaskInfo("Gold" + parsingName);
-			GameObject tempFriend4 = getMaskInfo("LightBlue" + parsingName);
-			GameObject tempFriend5 = getMaskInfo("Pink" + parsingName);
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend1)){numbfriends.Add(tempFriend1);}
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend2)){numbfriends.Add(tempFriend2);}
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend3)){numbfriends.Add(tempFriend3);}
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend4)){numbfriends.Add(tempFriend4);}
-			if(tempObj.GetComponent<MaskInfo>().friends.Contains(tempFriend5)){numbfriends.Add(tempFriend5);}
-			if(numbfriends.Count > 0){
-				int friend = Random.Range(0, numbfriends.Count-1);
-				if(friend == 1)tempFriend1.GetComponent<MaskInfo>().setGuiltyAssistant();
-				if(friend == 2)tempFriend2.GetComponent<MaskInfo>().setGuiltyAssistant();
-				if(friend == 3)tempFriend3.GetComponent<MaskInfo>().setGuiltyAssistant();
-				if(friend == 4)tempFriend4.GetComponent<MaskInfo>().setGuiltyAssistant();
-				if(friend == 5)tempFriend5.GetComponent<MaskInfo>().setGuiltyAssistant();
-			}
-			else{
-				int friend = Random.Range(1, 5);
-				GameObject toLink;
-				GameObject toLink2;
-				if(friend == 1){
-					toLink = tempFriend1.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend1;
-					tempFriend1.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-				if(friend == 2){
-					toLink = tempFriend2.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend2;
-					tempFriend2.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-				if(friend == 3){
-					toLink = tempFriend3.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend3;
-					tempFriend3.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-				if(friend == 4){
-					toLink = tempFriend4.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend4;
-					tempFriend4.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-				if(friend == 5){
-					toLink = tempFriend5.GetComponent<MaskInfo>().friends[0];					
-					toLink2 = tempObj.GetComponent<MaskInfo>().friends[0];
-					tempObj.GetComponent<MaskInfo>().friends[0] = tempFriend2;
-					tempFriend5.GetComponent<MaskInfo>().friends[0] = tempObj;
-				}
-			}
-		}
+		shuffleList(CuthbertAssistant.GetComponent<MaskInfo>().friends);
+		shuffleList(CuthbertAssistant.GetComponent<MaskInfo>().foes);
 	}
+	
+	public static string[] Chop(string value, int length){
+		int strLength = value.Length;
+		int strCount = (strLength + length - 1) / length;
+		string[] result = new string[strCount];
+		for (int i = 0; i < strCount; ++i)
+		{
+			result[i] = value.Substring(i * length, Mathf.Min(length, strLength));
+			strLength -= length;
+		}
+		return result;
+	}
+	
 	public void setUIPerson(string personName){
 		int currentPerson = System.Array.IndexOf(names, personName);
 		string tempFriends = "";
@@ -272,6 +210,15 @@ public class MaskManager : MonoBehaviour
 			reshuffleGO(masks);
 			index_currentGuest = 0;
 		}
+		masks[index_currentGuest].SetActive(true);
+		currentGuest = masks[index_currentGuest];
+	}
+	
+	public void callChoosenGuest(){
+		/*if(index_currentGuest == masks.Length){
+			reshuffleGO(masks);
+			index_currentGuest = 0;
+		}*/
 		masks[index_currentGuest].SetActive(true);
 		currentGuest = masks[index_currentGuest];
 	}
