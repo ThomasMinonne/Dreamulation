@@ -22,7 +22,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	#region IDragHandler implementation
 	public void OnDrag(PointerEventData eventData){
 		transform.position = Input.mousePosition;
-		GetComponent<RawImage>().maskable = false;
+		GetComponent<Image>().maskable = false;
 	}
 	#endregion
 	
@@ -30,7 +30,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	public void OnEndDrag(PointerEventData eventData){
 		itemBeginDragged = null;
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
-		GetComponent<RawImage>().maskable = true;
+		GetComponent<Image>().maskable = true;
 		if(transform.parent == startParent){
 			transform.position = startPosition;
 		}

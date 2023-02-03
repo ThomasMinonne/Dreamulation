@@ -16,9 +16,9 @@ public class DragSlot : MonoBehaviour, IDropHandler
 	
 	#region IDropHandler  implementation
 	public void OnDrop (PointerEventData eventData){
-		//if(!item){
+		if(!item){
 			Draggable.itemBeginDragged.transform.SetParent(transform);
-		//}
+		}
 	}
 	#endregion
 }
