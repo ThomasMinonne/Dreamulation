@@ -214,16 +214,14 @@ public class MaskManager : MonoBehaviour
 		currentGuest = masks[index_currentGuest];
 	}
 	
-	public void callChoosenGuest(){
-		/*if(index_currentGuest == masks.Length){
-			reshuffleGO(masks);
-			index_currentGuest = 0;
-		}*/
-		masks[index_currentGuest].SetActive(true);
-		currentGuest = masks[index_currentGuest];
+	public void callChoosenGuest(GameObject maskToActiveFromUI){
+		removeGuest();
+		maskToActiveFromUI.SetActive(true);
+		currentGuest = maskToActiveFromUI;
 	}
 	
 	public void removeGuest(){
+		
 		currentGuest.SetActive(false);
 		index_currentGuest++;
 	}
