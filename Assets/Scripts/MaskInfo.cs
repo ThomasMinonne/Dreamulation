@@ -11,6 +11,7 @@ public class MaskInfo : MonoBehaviour
 	public int tension_level;
 	public List<GameObject> friends = new List<GameObject>();
 	public List<GameObject> foes = new List<GameObject>();
+	public GameObject slotUI;
 	public TMP_Text friendsProText;
 	public TMP_Text foesProText;
 	

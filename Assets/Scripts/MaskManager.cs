@@ -267,4 +267,11 @@ public class MaskManager : MonoBehaviour
 		callGuest();
 		gameMenu.SetActive(true);
 	}
+
+	private void revealMasks( GameObject maskToReveal ){
+		GameObject slotMask = maskToReveal.GetComponent<MaskInfo>().slotUI;
+		GameObject toSetInslotMask = GameObject.Find(maskToReveal.GetComponent<MaskInfo>().personName);
+		toSetInslotMask.transform.position = slotMask.transform.position;
+		toSetInslotMask.GetComponent<Button>().Interactable = false;
+	}
 }
