@@ -1,15 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Data;
+using System;
+using Random = UnityEngine.Random;
 
 public class MaskManager : MonoBehaviour
 {
     public GameObject[] masks;
+	public int initMasks;
+	private int toInitMasks = 0;
+	private string[] elaborateMask = new string[2];
+	private int elaborateAnswer;
 	public GameObject friendsDialogue;
 	public GameObject foesDialogue;
 	public GameObject idkDialogue;
 	public GameObject gameMenu;
+	public GameObject gameMenuMaskActive;
+	private GameObject Culprit;
+	private GameObject CulpritAssistant;
 	public float waitAnswerTimer;
 	public string[] names;
 	public int friendsNumber;
@@ -31,7 +41,6 @@ public class MaskManager : MonoBehaviour
     {
 		reshuffleStrings(names);
 		setMaskInfo();
-		callGuest();
     }
 
     // Update is called once per frame
@@ -114,22 +123,20 @@ public class MaskManager : MonoBehaviour
 					CuthbertAssistant = masks[temp];
 					string[] parsingNameCuthbert = Chop(masks[i].GetComponent<MaskInfo>().name, masks[i].GetComponent<MaskInfo>().name.Length - 2);
 					string[] parsingNamefriend = Chop(masks[temp].GetComponent<MaskInfo>().name, masks[temp].GetComponent<MaskInfo>().name.Length - 2);
-					Debug.Log(parsingNameCuthbert[0]); 
-					Debug.Log(parsingNamefriend[0]);
+					//Condividono la maschera
 					if(parsingNameCuthbert[0] == parsingNamefriend[0]){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
 						Debug.Log("MASCHERA");
-					}//Condividono la maschera
-					else {
+					}
+					else {//condividono il simbolo
 						if(parsingNameCuthbert[1] == parsingNamefriend[1]){
 							masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 							guiltyAssistantSetted = true;
 							Debug.Log("SIMBOLO");
-						}//condividono il simbolo
-					}
+						}
+					}//non condividono nulla
 					if(!guiltyAssistantSetted){
-						//non condividono nulla
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
 						Debug.Log("NULLA");
@@ -146,9 +153,26 @@ public class MaskManager : MonoBehaviour
 			shuffleList(masks[i].GetComponent<MaskInfo>().foes);
 		}
 		setCuthbertRelationship(Cuthbert, CuthbertAssistant);
+		int[] maskStored = new int[initMasks];
+		while(toInitMasks < initMasks){ 
+			int r = Random.Range(0, masks.Length);
+			if(!masks[r].GetComponent<MaskInfo>().guilty && !masks[r].GetComponent<MaskInfo>().guiltyAssistant){
+				if(toInitMasks == 0){
+					maskStored[toInitMasks] = r;
+					revealMasks(masks[r]);
+					toInitMasks++;
+				} else if(!Array.Exists(maskStored, element => element == r)){
+					maskStored[toInitMasks] = r;
+					revealMasks(masks[r]);
+					toInitMasks++;
+				}
+			}	
+		}
 	}
 	
 	private void setCuthbertRelationship(GameObject Cuthbert, GameObject CuthbertAssistant){	
+		Culprit = Cuthbert;
+		CulpritAssistant = CuthbertAssistant;
 		GameObject toLink2 = CuthbertAssistant.GetComponent<MaskInfo>().friends[0];
 		if(!CuthbertAssistant.GetComponent<MaskInfo>().friends.Contains(Cuthbert)){
 			CuthbertAssistant.GetComponent<MaskInfo>().friends.Add(Cuthbert);
@@ -203,6 +227,22 @@ public class MaskManager : MonoBehaviour
 	
 	public void finishgame(){
 		isGameRunning = false;
+		if(Culprit.GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
+			if(Culprit.GetComponent<MaskInfo>().slotUI.transform.GetChild(0).name == "Cuthbert Humble"){
+				if(CulpritAssistant.GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
+					if(CulpritAssistant.GetComponent<MaskInfo>().slotUI.transform.GetChild(0).name == CulpritAssistant.GetComponent<MaskInfo>().personName){
+						setFinish(true);
+						return;
+					}
+				}
+			}
+		}
+		setFinish(false);
+	}
+	
+	private void setFinish(bool victory){
+		if(victory){Debug.Log("VINTOOOOOOOOO");}
+		else {Debug.Log("PERSOOOOOOO");}
 	}
 	
 	public void callGuest(){
@@ -215,7 +255,9 @@ public class MaskManager : MonoBehaviour
 	}
 	
 	public void callChoosenGuest(GameObject maskToActiveFromUI){
-		removeGuest();
+		if(currentGuest != null){
+			removeGuest();
+		}
 		maskToActiveFromUI.SetActive(true);
 		currentGuest = maskToActiveFromUI;
 	}
@@ -228,50 +270,95 @@ public class MaskManager : MonoBehaviour
 	
 	public void answer(string objectName){
 		//checka la maschera, se il nome della maschera premuta è tra gli amici della maschera corrente, allora sblocca il dialogo dell'amicizia, altrimenti il contrario
-		GameObject temp = getMaskInfo(objectName);
-		for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().friends.Count; i++){
-			if(currentGuest.GetComponent<MaskInfo>().friends[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
-				friendsDialogue.SetActive(true);
-				Invoke("deActivatorFriendsDialogue", waitAnswerTimer);
+		Debug.Log(elaborateAnswer);
+		if(elaborateAnswer == 0){
+			if(objectName.Length == 1){
+				elaborateMask[1] = objectName;
+				Debug.Log("Numebr setting");
+			} else {
+				elaborateMask[0] = objectName;
+				Debug.Log("Mask setting");
+			}
+			elaborateAnswer++;
+			return;
+		}
+		if(elaborateAnswer == 1){
+			Debug.Log("sono entrato");
+			if(elaborateMask[0] != objectName && elaborateMask[1] != objectName){
+				Debug.Log("Array setting");
+				if(objectName.Length == 1){
+					elaborateMask[1] = objectName;
+					Debug.Log("Numebr setting");
+				} else {
+					elaborateMask[0] = objectName;
+					Debug.Log("Mask setting");
+				}
+				elaborateAnswer++;
+			}
+			else{
+				if(objectName.Length == 1){
+					elaborateMask[1] = "a";
+				} else {
+					elaborateMask[0] = "a";
+				}
+				elaborateAnswer--;
 				return;
 			}
-		}
-		for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().foes.Count; i++){
-			if(currentGuest.GetComponent<MaskInfo>().foes[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
-				foesDialogue.SetActive(true);
-				Invoke("deActivatorFoesDialogue", waitAnswerTimer);
-				return;
+		} 
+		if(elaborateAnswer == 2){
+			GameObject temp = getMaskInfo(elaborateMask[0]+elaborateMask[1]);
+			for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().friends.Count; i++){
+				if(currentGuest.GetComponent<MaskInfo>().friends[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
+					friendsDialogue.SetActive(true);
+					Invoke("deActivatorFriendsDialogue", waitAnswerTimer);
+					elaborateAnswer = 0;
+					return;
+				}
 			}
+			for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().foes.Count; i++){
+				if(currentGuest.GetComponent<MaskInfo>().foes[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
+					foesDialogue.SetActive(true);
+					Invoke("deActivatorFoesDialogue", waitAnswerTimer);
+					elaborateAnswer = 0;
+					return;
+				}
+			}
+			idkDialogue.SetActive(true);
+			Invoke("deActivatorIdkDialogue", waitAnswerTimer);
+			elaborateAnswer = 0;
+			elaborateMask[0] = "a";
+			elaborateMask[1] = "a";
 		}
-		idkDialogue.SetActive(true);
-		Invoke("deActivatorIdkDialogue", waitAnswerTimer);
 	}
 	
 	private void deActivatorFriendsDialogue(){
 		friendsDialogue.SetActive(false);
-		removeGuest();
-		callGuest();
-		gameMenu.SetActive(true);
+		//removeGuest();
+		//callGuest();
+		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorFoesDialogue(){
 		foesDialogue.SetActive(false);
-		removeGuest();
-		callGuest();
-		gameMenu.SetActive(true);
+		//removeGuest();
+		//callGuest();
+		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorIdkDialogue(){
 		idkDialogue.SetActive(false);
-		removeGuest();
-		callGuest();
-		gameMenu.SetActive(true);
+		//removeGuest();
+		//callGuest();
+		gameMenuMaskActive.SetActive(true);
 	}
 
-	private void revealMasks( GameObject maskToReveal ){
+	private void revealMasks(GameObject maskToReveal){
 		GameObject slotMask = maskToReveal.GetComponent<MaskInfo>().slotUI;
+		Debug.Log(maskToReveal.GetComponent<MaskInfo>().personName);
 		GameObject toSetInslotMask = GameObject.Find(maskToReveal.GetComponent<MaskInfo>().personName);
+		toSetInslotMask.transform.parent = slotMask.transform;
 		toSetInslotMask.transform.position = slotMask.transform.position;
-		toSetInslotMask.GetComponent<Button>().Interactable = false;
+		toSetInslotMask.GetComponent<Button>().interactable = false;
+		toSetInslotMask.GetComponent<Draggable>().enabled = false;
 	}
 }
