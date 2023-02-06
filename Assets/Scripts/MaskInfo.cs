@@ -6,9 +6,11 @@ using TMPro;
 public class MaskInfo : MonoBehaviour
 {
 	public string personName;
+	public int stressCapacity;
+	public bool isStressed;
 	public bool guilty = false;
 	public bool guiltyAssistant = false;
-	public int tension_level;
+	public int tension_level = 0;
 	public List<GameObject> friends = new List<GameObject>();
 	public List<GameObject> foes = new List<GameObject>();
 	public GameObject slotUI;
@@ -46,5 +48,12 @@ public class MaskInfo : MonoBehaviour
 	public void setFoes(string toSet){
 		//foesProText = GameObject.Find("Grudges").GetComponent<TMP_Text>();
 		foesProText.text = toSet;
+	}
+	
+	public void setStress(){
+		tension_level += stressCapacity;
+		if(tension_level >= 100){
+			isStressed = true;
+		}
 	}
 }
