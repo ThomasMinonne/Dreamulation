@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
 		while(investigationOst.volume < 0.3f){
 			investigationOst.volume += 0.001f;
 		}
-		investigationOst.PlayOneShot(investigationOst.clip);
+		investigationOst.Play();
 	}
 	
 	public void stopOstInvestigation(){
@@ -38,10 +38,10 @@ public class AudioManager : MonoBehaviour
 	}
 	
 	public void startOstMenu(){
-		while(menuOst.volume > 0f){
-			menuOst.volume -= 0.001f;
+		while(menuOst.volume < 0.3f){
+			menuOst.volume += 0.001f;
 		}
-		menuOst.Stop();
+		menuOst.Play();
 	}
 	
 	public void stopOstMenu(){
