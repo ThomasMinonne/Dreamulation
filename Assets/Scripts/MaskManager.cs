@@ -256,6 +256,7 @@ public class MaskManager : MonoBehaviour
 		timerIsRunning = true;
 		isGameRunning = true;
 		timer.SetActive(true);
+		gameMenu.SetActive(true);
 	}
 	
 	public void finishgame(){
