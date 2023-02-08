@@ -11,6 +11,7 @@ public class MaskInfo : MonoBehaviour
 	public bool isStressed;
 	public bool guilty = false;
 	public bool guiltyAssistant = false;
+	public bool revealed = false;
 	public int tension_level = 0;
 	public List<GameObject> friends = new List<GameObject>();
 	public List<GameObject> foes = new List<GameObject>();
@@ -42,12 +43,10 @@ public class MaskInfo : MonoBehaviour
 	}
 	
 	public void setFriends(string toSet){
-		//friendsProText = GameObject.Find("Friends").GetComponent<TMP_Text>();
 		friendsProText.text = toSet;
 	}
 	
 	public void setFoes(string toSet){
-		//foesProText = GameObject.Find("Grudges").GetComponent<TMP_Text>();
 		foesProText.text = toSet;
 	}
 	

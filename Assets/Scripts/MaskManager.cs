@@ -9,10 +9,12 @@ using TMPro;
 
 public class MaskManager : MonoBehaviour
 {
+	private bool gameIsPaused;
 	public AudioManager audioManager;
 	public float timeRemaining = 10;
 	private float resetTimer;
 	public GameObject timer;
+	public GameObject masksToSearchInto;
 	public Animator eye;
     public bool timerIsRunning = false;
     public TMP_Text timeText;
@@ -64,17 +66,17 @@ public class MaskManager : MonoBehaviour
     void Update()
     {
 		if (timerIsRunning && isGameRunning)
-        {
-            if (timeRemaining > 0)
-            {
-                timeRemaining -= Time.deltaTime;
-                DisplayTime(timeRemaining);
-            } else {
+		{
+			if (timeRemaining > 0)
+			{
+				timeRemaining -= Time.deltaTime;
+				DisplayTime(timeRemaining);
+			} else {
 				timeRemaining = 0;
 				timerIsRunning = false;
 				finishgame();
 			}
-        }
+		}
     }
 	
 	private void DisplayTime(float timeToDisplay)
@@ -157,19 +159,19 @@ public class MaskManager : MonoBehaviour
 					if(parsingNameCuthbert[0] == parsingNamefriend[0]){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
-						CuthbertInfo.text = "Cuthber Humble's assistant is his mutual friend and his mask has the same shape of Cuthbert Humble's mask.";
+						CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend and his mask has the same shape of Cuthbert Humble's mask.";
 					}
 					else {//condividono il simbolo
 						if(parsingNameCuthbert[1] == parsingNamefriend[1]){
 							masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 							guiltyAssistantSetted = true;
-							CuthbertInfo.text = "Cuthber Humble's assistant is his mutual friend and his mask has the same symbol of Cuthbert Humble's mask.";
+							CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend and his mask has the same symbol of Cuthbert Humble's mask.";
 						}
 					}//non condividono nulla
 					if(!guiltyAssistantSetted){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
-						CuthbertInfo.text = "Cuthber Humble's assistant is his mutual friend, neither shape mask nor symbol mask match with Cuthbert Humble's mask.";
+						CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend, neither shape mask nor symbol mask match with Cuthbert Humble's mask.";
 					}
 				}
 			}
@@ -187,7 +189,7 @@ public class MaskManager : MonoBehaviour
 		setCuthbertRelationship(Cuthbert, CuthbertAssistant);
 		int[] maskStored = new int[initMasks];
 		while(toInitMasks < initMasks){ 
-			int r = Random.Range(0, masks.Length);
+			int r = Random.Range(0, masks.Length-1);
 			if(!masks[r].GetComponent<MaskInfo>().guilty && !masks[r].GetComponent<MaskInfo>().guiltyAssistant){
 				if(toInitMasks == 0){
 					maskStored[toInitMasks] = r;
@@ -293,6 +295,25 @@ public class MaskManager : MonoBehaviour
 		mainCamera.GetComponent<GlitchEffect>().intensity += 0.1f;
 		mainCamera.GetComponent<GlitchEffect>().flipIntensity += 0.1f;
 		mainCamera.GetComponent<GlitchEffect>().colorIntensity += 0.1f;
+		for(int i = 0; i < masks.Length; i++){
+			if(masks[i].GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
+				if(masks[i].GetComponent<MaskInfo>().slotUI.transform.GetChild(0).name == masks[i].GetComponent<MaskInfo>().personName){
+					masksToSearchInto.SetActive(true);
+					revealMasks(masks[i]);
+					masksToSearchInto.SetActive(false);
+				}
+			}
+		}
+		if(death_counter == 2 || death_counter == 5 || death_counter == 8 ){
+			int r = Random.Range(0, masks.Length-1);
+			while(masks[r].GetComponent<MaskInfo>().revealed || masks[r].GetComponent<MaskInfo>().guilty || masks[r].GetComponent<MaskInfo>().guiltyAssistant){
+				r = Random.Range(0, masks.Length-1);
+			}
+			Debug.Log(masks[r].GetComponent<MaskInfo>().personName);
+			masksToSearchInto.SetActive(true);
+			revealMasks(masks[r]);
+			masksToSearchInto.SetActive(false);
+		}
 	}
 	
 	public void callGuest(){
@@ -515,7 +536,7 @@ public class MaskManager : MonoBehaviour
 
 	private void revealMasks(GameObject maskToReveal){
 		GameObject slotMask = maskToReveal.GetComponent<MaskInfo>().slotUI;
-		Debug.Log(maskToReveal.GetComponent<MaskInfo>().personName);
+		maskToReveal.GetComponent<MaskInfo>().revealed = true;
 		GameObject toSetInslotMask = GameObject.Find(maskToReveal.GetComponent<MaskInfo>().personName);
 		toSetInslotMask.transform.parent = slotMask.transform;
 		toSetInslotMask.transform.position = slotMask.transform.position;
@@ -525,5 +546,9 @@ public class MaskManager : MonoBehaviour
 
 	public void resetTimerFunction(){
 		timeRemaining = resetTimer;
+	}
+
+	public void quit(){
+		Application.Quit();
 	}
 }
