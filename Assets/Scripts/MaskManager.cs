@@ -9,12 +9,14 @@ using TMPro;
 
 public class MaskManager : MonoBehaviour
 {
+	public AudioManager audioManager;
 	public float timeRemaining = 10;
 	private float resetTimer;
 	public GameObject timer;
 	public Animator eye;
     public bool timerIsRunning = false;
     public TMP_Text timeText;
+	public TMP_Text CuthbertInfo;
     public GameObject[] masks;
 	public int initMasks;
 	private int toInitMasks = 0;
@@ -155,19 +157,19 @@ public class MaskManager : MonoBehaviour
 					if(parsingNameCuthbert[0] == parsingNamefriend[0]){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
-						Debug.Log("MASCHERA");
+						CuthbertInfo.text = "Cuthber Humble's assistant is his mutual friend and his mask has the same shape of Cuthbert Humble's mask.";
 					}
 					else {//condividono il simbolo
 						if(parsingNameCuthbert[1] == parsingNamefriend[1]){
 							masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 							guiltyAssistantSetted = true;
-							Debug.Log("SIMBOLO");
+							CuthbertInfo.text = "Cuthber Humble's assistant is his mutual friend and his mask has the same symbol of Cuthbert Humble's mask.";
 						}
 					}//non condividono nulla
 					if(!guiltyAssistantSetted){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
-						Debug.Log("NULLA");
+						CuthbertInfo.text = "Cuthber Humble's assistant is his mutual friend, neither shape mask nor symbol mask match with Cuthbert Humble's mask.";
 					}
 				}
 			}
@@ -256,12 +258,14 @@ public class MaskManager : MonoBehaviour
 		timerIsRunning = true;
 		isGameRunning = true;
 		timer.SetActive(true);
+		audioManager.startOstInvestigation();
 		gameMenu.SetActive(true);
 	}
 	
 	public void finishgame(){
 		isGameRunning = false;
 		timer.SetActive(false);
+		audioManager.stopOstInvestigation();
 		if(Culprit.GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
 			if(Culprit.GetComponent<MaskInfo>().slotUI.transform.GetChild(0).name == "Cuthbert Humble"){
 				if(CulpritAssistant.GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
