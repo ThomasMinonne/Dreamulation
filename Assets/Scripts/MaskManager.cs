@@ -5,21 +5,33 @@ using UnityEngine.UI;
 using System.Data;
 using System;
 using Random = UnityEngine.Random;
+using TMPro;
 
 public class MaskManager : MonoBehaviour
 {
+	public float timeRemaining = 10;
+	private float resetTimer;
+	public GameObject timer;
+	public Animator eye;
+    public bool timerIsRunning = false;
+    public TMP_Text timeText;
     public GameObject[] masks;
 	public int initMasks;
 	private int toInitMasks = 0;
+	private int death_counter = 0;
 	private string[] elaborateMask = new string[2];
-	private int elaborateAnswer;
+	private int elaborateAnswer = 0;
 	public GameObject friendsDialogue;
 	public GameObject foesDialogue;
 	public GameObject idkDialogue;
+	public GameObject mumbleDialogue;
 	public GameObject gameMenu;
 	public GameObject gameMenuMaskActive;
 	private GameObject Culprit;
 	private GameObject CulpritAssistant;
+	public GameObject[] deathsUI;
+	public GameObject winUI;
+	public GameObject mainCamera;
 	public float waitAnswerTimer;
 	public string[] names;
 	public int friendsNumber;
@@ -41,18 +53,34 @@ public class MaskManager : MonoBehaviour
     {
 		reshuffleStrings(names);
 		setMaskInfo();
+		elaborateMask[0] = "";
+		elaborateMask[1] = "";
+		resetTimer = timeRemaining;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+		if (timerIsRunning && isGameRunning)
         {
-			if(currentGuest != null){
-				removeGuest();
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                DisplayTime(timeRemaining);
+            } else {
+				timeRemaining = 0;
+				timerIsRunning = false;
+				finishgame();
 			}
-			callGuest();
         }
+    }
+	
+	private void DisplayTime(float timeToDisplay)
+    {
+        timeToDisplay += 1;
+        float minutes = Mathf.FloorToInt(timeToDisplay / 60); 
+        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 	
 	private void setMaskInfo(){
@@ -151,6 +179,8 @@ public class MaskManager : MonoBehaviour
 			}
 			shuffleList(masks[i].GetComponent<MaskInfo>().friends);
 			shuffleList(masks[i].GetComponent<MaskInfo>().foes);
+			int rand = Random.Range(12, 18);
+			masks[i].GetComponent<MaskInfo>().stressCapacity = rand;
 		}
 		setCuthbertRelationship(Cuthbert, CuthbertAssistant);
 		int[] maskStored = new int[initMasks];
@@ -222,11 +252,15 @@ public class MaskManager : MonoBehaviour
 	}
 
 	public void startgame(){
+		timeRemaining = resetTimer;
+		timerIsRunning = true;
 		isGameRunning = true;
+		timer.SetActive(true);
 	}
 	
 	public void finishgame(){
 		isGameRunning = false;
+		timer.SetActive(false);
 		if(Culprit.GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
 			if(Culprit.GetComponent<MaskInfo>().slotUI.transform.GetChild(0).name == "Cuthbert Humble"){
 				if(CulpritAssistant.GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
@@ -241,8 +275,19 @@ public class MaskManager : MonoBehaviour
 	}
 	
 	private void setFinish(bool victory){
-		if(victory){Debug.Log("VINTOOOOOOOOO");}
-		else {Debug.Log("PERSOOOOOOO");}
+		timerIsRunning = false;
+		if(victory){winUI.SetActive(true);}
+		else {
+			deathsUI[death_counter].SetActive(true);
+			death_counter++;
+			onLooseEffects();
+		}
+	}
+	
+	private void onLooseEffects(){
+		mainCamera.GetComponent<GlitchEffect>().intensity += 0.1f;
+		mainCamera.GetComponent<GlitchEffect>().flipIntensity += 0.1f;
+		mainCamera.GetComponent<GlitchEffect>().colorIntensity += 0.1f;
 	}
 	
 	public void callGuest(){
@@ -252,6 +297,7 @@ public class MaskManager : MonoBehaviour
 		}
 		masks[index_currentGuest].SetActive(true);
 		currentGuest = masks[index_currentGuest];
+		setAnimationToMask();
 	}
 	
 	public void callChoosenGuest(GameObject maskToActiveFromUI){
@@ -260,95 +306,205 @@ public class MaskManager : MonoBehaviour
 		}
 		maskToActiveFromUI.SetActive(true);
 		currentGuest = maskToActiveFromUI;
+		setAnimationToMask();
 	}
 	
 	public void removeGuest(){
-		
+		currentGuest.GetComponent<MaskInfo>().multiplyStress = 1;
 		currentGuest.SetActive(false);
 		index_currentGuest++;
 	}
 	
 	public void answer(string objectName){
 		//checka la maschera, se il nome della maschera premuta è tra gli amici della maschera corrente, allora sblocca il dialogo dell'amicizia, altrimenti il contrario
+		bool checkAnswerSwap = false;
 		Debug.Log(elaborateAnswer);
 		if(elaborateAnswer == 0){
 			if(objectName.Length == 1){
 				elaborateMask[1] = objectName;
 				Debug.Log("Numebr setting");
+				GameObject button = GameObject.Find(objectName);
+				button.GetComponent<RawImage>().color = new Color32(0,255,0,255);
+				elaborateAnswer++;
+				checkAnswerSwap = true;
 			} else {
 				elaborateMask[0] = objectName;
 				Debug.Log("Mask setting");
+				Debug.Log("MASCHERA : " + elaborateMask[0]);
+				GameObject button = GameObject.Find(objectName);
+				button.GetComponent<RawImage>().color = new Color32(0,255,0,255);
+				elaborateAnswer++;
+				checkAnswerSwap = true;
 			}
-			elaborateAnswer++;
-			return;
 		}
 		if(elaborateAnswer == 1){
-			Debug.Log("sono entrato");
-			if(elaborateMask[0] != objectName && elaborateMask[1] != objectName){
-				Debug.Log("Array setting");
-				if(objectName.Length == 1){
-					elaborateMask[1] = objectName;
-					Debug.Log("Numebr setting");
-				} else {
-					elaborateMask[0] = objectName;
-					Debug.Log("Mask setting");
+			if(!checkAnswerSwap){
+				Debug.Log("sono entrato");
+				if(elaborateMask[0] != objectName && elaborateMask[1] != objectName){
+					Debug.Log("Array setting");
+					if(objectName.Length == 1){
+						if(elaborateMask[1] != ""){
+							GameObject button = GameObject.Find(elaborateMask[1]);
+							button.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+							elaborateMask[1] = objectName;
+							button = GameObject.Find(elaborateMask[1]);
+							button.GetComponent<RawImage>().color = new Color32(0,255,0,255);
+							elaborateAnswer--;
+						} else {
+							elaborateMask[1] = objectName;
+							GameObject button = GameObject.Find(elaborateMask[1]);
+							button.GetComponent<RawImage>().color = new Color32(0,255,0,255);
+							Debug.Log("Numebr setting");
+						}
+					} else {
+						if(elaborateMask[0] != ""){
+							GameObject button2 = GameObject.Find(elaborateMask[0]);
+							Debug.Log(elaborateMask[0]);
+							button2.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+							elaborateMask[0] = objectName;
+							button2 = GameObject.Find(elaborateMask[0]);
+							button2.GetComponent<RawImage>().color = new Color32(0,255,0,255);
+							elaborateAnswer--;
+						}
+						elaborateMask[0] = objectName;
+						GameObject button = GameObject.Find(elaborateMask[0]);
+						button.GetComponent<RawImage>().color = new Color32(0,255,0,255);
+						Debug.Log("Mask setting");
+						Debug.Log("MASCHERA : " + elaborateMask[0]);
+					}
+					elaborateAnswer++;
 				}
-				elaborateAnswer++;
-			}
-			else{
-				if(objectName.Length == 1){
-					elaborateMask[1] = "a";
-				} else {
-					elaborateMask[0] = "a";
+				else{
+					if(objectName.Length == 1){
+						elaborateMask[1] = "";
+						GameObject button = GameObject.Find(objectName);
+						button.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+					} else {
+						elaborateMask[0] = "";
+						GameObject button = GameObject.Find(objectName);
+						button.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+					}
+					Debug.Log("MASCHERA : " + elaborateMask[0]);
+					Debug.Log("SIMBOLO : " + elaborateMask[1]);
+					elaborateAnswer--;
+					return;
 				}
-				elaborateAnswer--;
-				return;
 			}
 		} 
 		if(elaborateAnswer == 2){
-			GameObject temp = getMaskInfo(elaborateMask[0]+elaborateMask[1]);
-			for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().friends.Count; i++){
-				if(currentGuest.GetComponent<MaskInfo>().friends[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
-					friendsDialogue.SetActive(true);
-					Invoke("deActivatorFriendsDialogue", waitAnswerTimer);
-					elaborateAnswer = 0;
-					return;
+			int randStress = Random.Range(0, 100);
+			if(randStress > currentGuest.GetComponent<MaskInfo>().tension_level){
+				GameObject temp = getMaskInfo(elaborateMask[0]+elaborateMask[1]);
+				for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().friends.Count; i++){
+					if(currentGuest.GetComponent<MaskInfo>().friends[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
+						friendsDialogue.SetActive(true);
+						Invoke("deActivatorFriendsDialogue", waitAnswerTimer);
+						elaborateAnswer = 0;
+						GameObject button = GameObject.Find(elaborateMask[0]);
+						button.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+						button = GameObject.Find(elaborateMask[1]);
+						button.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+						elaborateMask[0] = "";
+						elaborateMask[1] = "";
+						currentGuest.GetComponent<MaskInfo>().setStress();
+						currentGuest.GetComponent<MaskInfo>().multiplyStress += 1;
+						setAnimationToMask();
+						lowTensionLevel();
+						return;
+					}
 				}
-			}
-			for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().foes.Count; i++){
-				if(currentGuest.GetComponent<MaskInfo>().foes[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
-					foesDialogue.SetActive(true);
-					Invoke("deActivatorFoesDialogue", waitAnswerTimer);
-					elaborateAnswer = 0;
-					return;
+				for(int i = 0; i < currentGuest.GetComponent<MaskInfo>().foes.Count; i++){
+					if(currentGuest.GetComponent<MaskInfo>().foes[i].GetComponent<MaskInfo>().personName == temp.GetComponent<MaskInfo>().personName){
+						foesDialogue.SetActive(true);
+						Invoke("deActivatorFoesDialogue", waitAnswerTimer);
+						elaborateAnswer = 0;
+						GameObject button3 = GameObject.Find(elaborateMask[0]);
+						button3.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+						button3 = GameObject.Find(elaborateMask[1]);
+						button3.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+						elaborateMask[0] = "";
+						elaborateMask[1] = "";
+						currentGuest.GetComponent<MaskInfo>().setStress();
+						currentGuest.GetComponent<MaskInfo>().multiplyStress += 1;
+						setAnimationToMask();
+						lowTensionLevel();
+						return;
+					}
 				}
+				idkDialogue.SetActive(true);
+				Invoke("deActivatorIdkDialogue", waitAnswerTimer);
+				elaborateAnswer = 0;
+				GameObject button4 = GameObject.Find(elaborateMask[0]);
+				button4.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+				button4 = GameObject.Find(elaborateMask[1]);
+				button4.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+				elaborateMask[0] = "";
+				elaborateMask[1] = "";
+				currentGuest.GetComponent<MaskInfo>().setStress();
+				currentGuest.GetComponent<MaskInfo>().multiplyStress += 1;
 			}
-			idkDialogue.SetActive(true);
-			Invoke("deActivatorIdkDialogue", waitAnswerTimer);
-			elaborateAnswer = 0;
-			elaborateMask[0] = "a";
-			elaborateMask[1] = "a";
+			else {
+				mumbleDialogue.SetActive(true);
+				Invoke("deActivatorMumbleDialogue", waitAnswerTimer);
+				elaborateAnswer = 0;
+				GameObject button5 = GameObject.Find(elaborateMask[0]);
+				button5.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+				button5 = GameObject.Find(elaborateMask[1]);
+				button5.GetComponent<RawImage>().color = new Color32(255,255,255,255);
+				elaborateMask[0] = "";
+				elaborateMask[1] = "";
+				currentGuest.GetComponent<MaskInfo>().setStress();
+				currentGuest.GetComponent<MaskInfo>().multiplyStress += 1;
+			}
+			setAnimationToMask();
+			lowTensionLevel();
+		}
+	}
+	
+	private void lowTensionLevel(){
+		for(int i = 0; i < masks.Length; i++){
+			if(masks[i] != currentGuest){
+				if(masks[i].GetComponent<MaskInfo>().tension_level > 0)masks[i].GetComponent<MaskInfo>().tension_level -= 10;
+				if(masks[i].GetComponent<MaskInfo>().tension_level < 0) masks[i].GetComponent<MaskInfo>().tension_level = 0;
+			}
+		}
+	}
+	
+	private void setAnimationToMask(){
+		if(currentGuest.GetComponent<MaskInfo>().tension_level >= 24 && currentGuest.GetComponent<MaskInfo>().tension_level < 60) {
+			currentGuest.transform.parent.gameObject.GetComponent<Animator>().Play("Gold1_anxious");
+			currentGuest.transform.GetChild(1).gameObject.GetComponent<Animator>().SetInteger("Stress", 2);
+			currentGuest.transform.GetChild(2).gameObject.GetComponent<Animator>().SetInteger("Stress", 2);
+		}
+		else if(currentGuest.GetComponent<MaskInfo>().tension_level >= 60) {
+			currentGuest.transform.parent.gameObject.GetComponent<Animator>().Play("Gold1_moreanxious");
+			currentGuest.transform.GetChild(1).gameObject.GetComponent<Animator>().SetInteger("Stress", 3);
+			currentGuest.transform.GetChild(2).gameObject.GetComponent<Animator>().SetInteger("Stress", 3);
+		}
+		else {
+			currentGuest.transform.parent.gameObject.GetComponent<Animator>().Play("Gold1");
+			currentGuest.transform.GetChild(1).gameObject.GetComponent<Animator>().SetInteger("Stress", 1);
+			currentGuest.transform.GetChild(2).gameObject.GetComponent<Animator>().SetInteger("Stress", 1);
 		}
 	}
 	
 	private void deActivatorFriendsDialogue(){
 		friendsDialogue.SetActive(false);
-		//removeGuest();
-		//callGuest();
 		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorFoesDialogue(){
 		foesDialogue.SetActive(false);
-		//removeGuest();
-		//callGuest();
 		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorIdkDialogue(){
 		idkDialogue.SetActive(false);
-		//removeGuest();
-		//callGuest();
+		gameMenuMaskActive.SetActive(true);
+	}
+	
+	private void deActivatorMumbleDialogue(){
+		mumbleDialogue.SetActive(false);
 		gameMenuMaskActive.SetActive(true);
 	}
 
@@ -360,5 +516,9 @@ public class MaskManager : MonoBehaviour
 		toSetInslotMask.transform.position = slotMask.transform.position;
 		toSetInslotMask.GetComponent<Button>().interactable = false;
 		toSetInslotMask.GetComponent<Draggable>().enabled = false;
+	}
+
+	public void resetTimerFunction(){
+		timeRemaining = resetTimer;
 	}
 }

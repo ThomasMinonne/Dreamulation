@@ -6,6 +6,7 @@ using TMPro;
 public class MaskInfo : MonoBehaviour
 {
 	public string personName;
+	public int multiplyStress = 1;
 	public int stressCapacity;
 	public bool isStressed;
 	public bool guilty = false;
@@ -51,7 +52,7 @@ public class MaskInfo : MonoBehaviour
 	}
 	
 	public void setStress(){
-		tension_level += stressCapacity;
+		tension_level += stressCapacity*multiplyStress;
 		if(tension_level >= 100){
 			isStressed = true;
 		}
