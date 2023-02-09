@@ -1066,8 +1066,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -257.44354}
-  m_SizeDelta: {x: 1221.3982, y: 373.7611}
+  m_AnchoredPosition: {x: 0, y: -208.84}
+  m_SizeDelta: {x: 1221.4, y: 276.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &50409508
 MonoBehaviour:
@@ -2448,8 +2448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 4
   indentLevel: 0
-  storyText: Again, you decide to go through the death sensation and restart the
-    simulation.
+  storyText: The simulation will restart soon.
   description: 
   character: {fileID: 0}
   portrait: {fileID: 0}
@@ -2476,9 +2475,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: Your inner soul try to reborn once more. Even if this is a simulation,
+  storyText: Your inner soul tries to reborn once more. Even if this is a simulation,
     your death feel real. You experienced void so many times that your mind is collpased.
-    Just die already.
+    You begin to wish yourself death for good.
   description: 
   character: {fileID: 0}
   portrait: {fileID: 0}
@@ -2543,7 +2542,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 579
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -16873,7 +16872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: 'Your inner soul refuse to die. Sixth time. You cannot feel yourself
+  storyText: 'Your inner soul refuses to die. Sixth time. You cannot feel yourself
     anymore. Your soul are about to die, it cannot burden such torture longer.
 
 '
@@ -16941,7 +16940,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 580
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -16997,7 +16996,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 662869352}
   selectedCommands:
-  - {fileID: 662869348}
+  - {fileID: 662869349}
   variables: []
   description: 
   stepPause: 0
@@ -17633,7 +17632,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: 'Your inner soul refuse to die. This is the second time already, you
+  storyText: 'Your inner soul refuses to die. This is the second time already, you
     begin to ask yourself how many times you have to bear this pain.
 
 '
@@ -17701,7 +17700,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 576
     y: 145
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -21287,8 +21286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 4
   indentLevel: 0
-  storyText: You decide to go through the death sensation and restart the simulation.
-    But this will be the last course.
+  storyText: The simulation will soon restart once more. It will be the last course.
   description: 
   character: {fileID: 0}
   portrait: {fileID: 0}
@@ -21384,7 +21382,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 579
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -21446,7 +21444,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 784448270}
   selectedCommands:
-  - {fileID: 784448267}
+  - {fileID: 784448266}
   variables: []
   description: 
   stepPause: 0
@@ -23884,7 +23882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: 'Your inner soul refuse to die. Fourth time, are you gettin'' comfortable?
+  storyText: 'Your inner soul refuses to die. Fourth time, are you gettin'' comfortable?
     You shouldn''t.
 
 '
@@ -23952,7 +23950,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 580
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -24004,7 +24002,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 819630732}
   selectedCommands:
-  - {fileID: 819630728}
+  - {fileID: 819630729}
   variables: []
   description: 
   stepPause: 0
@@ -25370,8 +25368,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00048828, y: -428.8}
-  m_SizeDelta: {x: 1221.4, y: 50}
+  m_AnchoredPosition: {x: -0.00048828, y: -416.66}
+  m_SizeDelta: {x: 1221.4, y: 74.29}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &887668029
 MonoBehaviour:
@@ -31652,7 +31650,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 948832487}
   m_HandleRect: {fileID: 948832485}
   m_Direction: 3
-  m_Value: 0.4000002
+  m_Value: 0.40000007
   m_Size: 0.6617668
   m_NumberOfSteps: 11
   m_OnValueChanged:
@@ -35432,7 +35430,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 582
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -35885,7 +35883,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 41
   m_TargetDisplay: 0
 --- !u!224 &1194356731
 RectTransform:
@@ -36321,7 +36319,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -167.00006, y: -390.99997}
+  m_AnchoredPosition: {x: -167.00006, y: -391}
   m_SizeDelta: {x: -470, y: -964.3603}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1218782572
@@ -40215,7 +40213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: Your inner soul refuse to die. Fifth time, your consciousness isn't
+  storyText: Your inner soul refuses to die. Fifth time, your consciousness isn't
     anymore. This is not about the case at this point. You're trying to survive.
   description: 
   character: {fileID: 0}
@@ -40281,7 +40279,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 580
     y: 146
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -44378,7 +44376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dddfdc5e0e44ca298d8f46f7f5a915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedFlowchart: {fileID: 2058451109}
+  selectedFlowchart: {fileID: 1808936353}
 --- !u!4 &1522142615
 Transform:
   m_ObjectHideFlags: 1
@@ -47246,7 +47244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: "Your inner soul refuse to die. Third time. You're losing your humanity,
+  storyText: "Your inner soul refuses to die. Third time. You're losing humanity,
     you feel empty. But you decide to go over and over, even if your perception is
     half gone.  \n"
   description: 
@@ -47313,7 +47311,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 576
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -50083,7 +50081,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 226.40556}
+  m_margin: {x: 0, y: 0, z: 0, w: 315.80145}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -51584,7 +51582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1808936350
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -51630,7 +51628,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 579
     y: 147
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -58274,7 +58272,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 580
     y: 145
-    width: 111
+    width: 112.4
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -58320,7 +58318,7 @@ MonoBehaviour:
   selectedBlocks:
   - {fileID: 2058451108}
   selectedCommands:
-  - {fileID: 2058451110}
+  - {fileID: 2058451111}
   variables: []
   description: 
   stepPause: 0
@@ -58373,8 +58371,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 3
   indentLevel: 0
-  storyText: 'Your inner soul refuse to die. Damage will be forever lasting, but
-    you can''t let the case unresolved.
+  storyText: 'Your inner soul refuses to die. Damage will be forever lasting, but
+    you can''t let the case unsolved.
 
 '
   description: 
