@@ -6,23 +6,31 @@ using UnityEngine.UI;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+	public Transform rootParent;
+	
 	public static GameObject itemBeginDragged;
 	Vector3 startPosition;
 	Transform startParent;
+	
+	 void Start()
+    {
+        rootParent = transform.parent.transform.parent.transform.parent.transform.parent;
+    }
 	
 	#region IBeginDragHandler implementation
 	public void OnBeginDrag(PointerEventData eventData){
 		itemBeginDragged = gameObject;
 		startPosition = transform.position;
 		startParent = transform.parent;
+		transform.SetParent(rootParent);
 		GetComponent<CanvasGroup>().blocksRaycasts = false;
 	}
 	#endregion
 	
 	#region IDragHandler implementation
 	public void OnDrag(PointerEventData eventData){
-		transform.position = Input.mousePosition;
-		GetComponent<Image>().maskable = false;
+		Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		transform.position = Vector3.MoveTowards(transform.position, new Vector3 (point.x, point.y, transform.position.z), 1);
 	}
 	#endregion
 	
@@ -30,9 +38,9 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	public void OnEndDrag(PointerEventData eventData){
 		itemBeginDragged = null;
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
-		GetComponent<Image>().maskable = true;
-		if(transform.parent == startParent){
+		if(transform.parent == rootParent || transform.parent == startParent){
 			transform.position = startPosition;
+			transform.SetParent(startParent);
 		}
 	}
 	#endregion

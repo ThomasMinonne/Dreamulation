@@ -9,37 +9,56 @@ using TMPro;
 
 public class MaskManager : MonoBehaviour
 {
-	private bool gameIsPaused;
-	public AudioManager audioManager;
-	public float timeRemaining = 10;
-	private float resetTimer;
-	public GameObject timer;
-	public GameObject masksToSearchInto;
-	public Animator eye;
-    public bool timerIsRunning = false;
-    public TMP_Text timeText;
-	public TMP_Text CuthbertInfo;
-    public GameObject[] masks;
+	[Header("Masks settings")]
+	public GameObject[] masks;
+	public GameObject[] slotNamesMasks;
+	public string[] names;
+	[Tooltip("Initial masks to reveal")]
 	public int initMasks;
-	private int toInitMasks = 0;
-	private int death_counter = 0;
-	private string[] elaborateMask = new string[2];
-	private int elaborateAnswer = 0;
+	public int friendsNumber;
+	public int foesNumber;
+	[Tooltip("UI where there are the masks to associate with names")]
+	public GameObject masksToSearchInto;
+	[Tooltip("Cuthbert Humble hint textbox")]
+	public TMP_Text CuthbertInfo;
+	
+	[Header("UI menus")]
+	public GameObject mainCamera;
+	public GameObject gameMenu;
+	public GameObject gameMenuMaskActive;
+	public GameObject[] deathsUI;
+	public GameObject winUI;
+	
+	[Header("Dialogue Settings")]
 	public GameObject friendsDialogue;
 	public GameObject foesDialogue;
 	public GameObject idkDialogue;
 	public GameObject mumbleDialogue;
-	public GameObject gameMenu;
-	public GameObject gameMenuMaskActive;
+	
+	[Header("Animation settings")]
+	public Animator eye;
+	[Tooltip("Show time of the Mask answer")]
+	public float waitAnswerTimer;
+	
+	[Header("Audio Settings")]
+	public AudioManager audioManager;
+	
+	[Header("Timer Settings")]
+	public GameObject timer;
+	public float timeRemaining = 10;
+	public TMP_Text timeText;
+	public bool timerIsRunning = false;
+	
+	//Utilites variables
+	private bool gameIsPaused;
+	private float resetTimer;
+	//index to cycle masks to init
+	private int toInitMasks = 0;
+	private int death_counter = 0;
+	private string[] elaborateMask = new string[2];
+	private int elaborateAnswer = 0;
 	private GameObject Culprit;
 	private GameObject CulpritAssistant;
-	public GameObject[] deathsUI;
-	public GameObject winUI;
-	public GameObject mainCamera;
-	public float waitAnswerTimer;
-	public string[] names;
-	public int friendsNumber;
-	public int foesNumber;
 	private string tempFriendsText;
 	private string tempFoesText;
 	private bool guiltyAssistantSetted = false;
@@ -298,9 +317,7 @@ public class MaskManager : MonoBehaviour
 		for(int i = 0; i < masks.Length; i++){
 			if(masks[i].GetComponent<MaskInfo>().slotUI.transform.childCount > 0){
 				if(masks[i].GetComponent<MaskInfo>().slotUI.transform.GetChild(0).name == masks[i].GetComponent<MaskInfo>().personName){
-					masksToSearchInto.SetActive(true);
 					revealMasks(masks[i]);
-					masksToSearchInto.SetActive(false);
 				}
 			}
 		}
@@ -310,9 +327,7 @@ public class MaskManager : MonoBehaviour
 				r = Random.Range(0, masks.Length-1);
 			}
 			Debug.Log(masks[r].GetComponent<MaskInfo>().personName);
-			masksToSearchInto.SetActive(true);
 			revealMasks(masks[r]);
-			masksToSearchInto.SetActive(false);
 		}
 	}
 	
@@ -535,11 +550,20 @@ public class MaskManager : MonoBehaviour
 	}
 
 	private void revealMasks(GameObject maskToReveal){
+		GameObject toSetInslotMask = null;
 		GameObject slotMask = maskToReveal.GetComponent<MaskInfo>().slotUI;
 		maskToReveal.GetComponent<MaskInfo>().revealed = true;
-		GameObject toSetInslotMask = GameObject.Find(maskToReveal.GetComponent<MaskInfo>().personName);
-		toSetInslotMask.transform.parent = slotMask.transform;
+		for(int i = 0; i < slotNamesMasks.Length; i++){
+			if(slotNamesMasks[i].name == maskToReveal.GetComponent<MaskInfo>().personName){
+				toSetInslotMask = slotNamesMasks[i];
+			}
+		}
+		if(slotMask.transform.childCount > 0){
+			slotMask.transform.GetChild(0).SetParent(toSetInslotMask.transform.parent);
+		}
+		toSetInslotMask.transform.SetParent(slotMask.transform);
 		toSetInslotMask.transform.position = slotMask.transform.position;
+		toSetInslotMask.transform.localScale = new Vector3(1,1,1);
 		toSetInslotMask.GetComponent<Button>().interactable = false;
 		toSetInslotMask.GetComponent<Draggable>().enabled = false;
 	}
