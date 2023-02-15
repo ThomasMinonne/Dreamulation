@@ -36,7 +36,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	
 	#region IEndDragHandler implementation
 	public void OnEndDrag(PointerEventData eventData){
-		itemBeginDragged = null;
+		//itemBeginDragged = null;
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
 		if(transform.parent == rootParent || transform.parent == startParent){
 			transform.position = startPosition;

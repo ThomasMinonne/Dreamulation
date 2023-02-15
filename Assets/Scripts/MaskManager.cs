@@ -28,6 +28,10 @@ public class MaskManager : MonoBehaviour
 	public GameObject gameMenuMaskActive;
 	public GameObject[] deathsUI;
 	public GameObject winUI;
+	public GameObject onlyRevealed;
+	public TMP_Text maskNameText;
+	public TMP_Text goodRelationships;
+	public TMP_Text badRelationships;
 	
 	[Header("Dialogue Settings")]
 	public GameObject friendsDialogue;
@@ -348,11 +352,15 @@ public class MaskManager : MonoBehaviour
 		maskToActiveFromUI.SetActive(true);
 		currentGuest = maskToActiveFromUI;
 		setAnimationToMask();
+		if(currentGuest.GetComponent<MaskInfo>().revealed){
+			setUIRevealedPerson(currentGuest);
+		}
 	}
 	
 	public void removeGuest(){
 		currentGuest.GetComponent<MaskInfo>().multiplyStress = 1;
 		currentGuest.SetActive(false);
+		onlyRevealed.SetActive(false);
 		index_currentGuest++;
 	}
 	
@@ -568,6 +576,27 @@ public class MaskManager : MonoBehaviour
 		toSetInslotMask.GetComponent<Draggable>().enabled = false;
 	}
 
+	public void setUIRevealedPerson(GameObject maskToReveal){
+		string tempFriends = "";
+		string tempFoes = "";
+		for(int i = 0; i < maskToReveal.GetComponent<MaskInfo>().friends.Count; i++){
+			if( i  == maskToReveal.GetComponent<MaskInfo>().friends.Count - 1 ){
+				tempFriends += maskToReveal.GetComponent<MaskInfo>().friends[i].GetComponent<MaskInfo>().personName;
+			}
+			else tempFriends += maskToReveal.GetComponent<MaskInfo>().friends[i].GetComponent<MaskInfo>().personName + "\n";
+		}
+		for(int i = 0; i < maskToReveal.GetComponent<MaskInfo>().foes.Count; i++){
+			if( i  == maskToReveal.GetComponent<MaskInfo>().foes.Count - 1 ){
+				tempFoes += maskToReveal.GetComponent<MaskInfo>().foes[i].GetComponent<MaskInfo>().personName;
+			}
+			else tempFoes += maskToReveal.GetComponent<MaskInfo>().foes[i].GetComponent<MaskInfo>().personName + "\n";
+		}
+		goodRelationships.SetText(tempFriends);
+		badRelationships.SetText(tempFoes);
+		maskNameText.SetText(maskToReveal.GetComponent<MaskInfo>().personName);
+		onlyRevealed.SetActive(true);
+	}
+	
 	public void resetTimerFunction(){
 		timeRemaining = resetTimer;
 	}
