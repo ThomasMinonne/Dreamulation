@@ -29,6 +29,7 @@ public class MaskManager : MonoBehaviour
 	public GameObject[] deathsUI;
 	public GameObject winUI;
 	public GameObject onlyRevealed;
+	public GameObject assistantMarker;
 	public TMP_Text maskNameText;
 	public TMP_Text goodRelationships;
 	public TMP_Text badRelationships;
@@ -182,20 +183,21 @@ public class MaskManager : MonoBehaviour
 					if(parsingNameCuthbert[0] == parsingNamefriend[0]){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
-						CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend and his mask has the same shape of Cuthbert Humble's mask.";
+						//CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend and his mask has the same shape of Cuthbert Humble's mask. The Mask of Cuthbert's assistant is marked.";
 					}
 					else {//condividono il simbolo
 						if(parsingNameCuthbert[1] == parsingNamefriend[1]){
 							masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 							guiltyAssistantSetted = true;
-							CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend and his mask has the same symbol of Cuthbert Humble's mask.";
+							//CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend and his mask has the same symbol of Cuthbert Humble's mask. The Mask of Cuthbert's assistant is marked.";
 						}
 					}//non condividono nulla
 					if(!guiltyAssistantSetted){
 						masks[temp].GetComponent<MaskInfo>().setGuiltyAssistant();
 						guiltyAssistantSetted = true;
-						CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend, neither shape mask nor symbol mask match with Cuthbert Humble's mask.";
+						//CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend, neither shape mask nor symbol mask match with Cuthbert Humble's mask. The Mask of Cuthbert's assistant is marked.";
 					}
+					CuthbertInfo.text = "Cuthbert Humble's assistant is his mutual friend. The Mask of Cuthbert's assistant is marked.";
 				}
 			}
 			//Setting Foes to all the masks
@@ -315,6 +317,7 @@ public class MaskManager : MonoBehaviour
 	}
 	
 	private void onLooseEffects(){
+		audioManager.transform.GetChild(1).gameObject.GetComponent<AudioSource>().pitch += 0.1f;
 		mainCamera.GetComponent<GlitchEffect>().intensity += 0.1f;
 		mainCamera.GetComponent<GlitchEffect>().flipIntensity += 0.1f;
 		mainCamera.GetComponent<GlitchEffect>().colorIntensity += 0.1f;
@@ -539,22 +542,18 @@ public class MaskManager : MonoBehaviour
 	
 	private void deActivatorFriendsDialogue(){
 		friendsDialogue.SetActive(false);
-		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorFoesDialogue(){
 		foesDialogue.SetActive(false);
-		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorIdkDialogue(){
 		idkDialogue.SetActive(false);
-		gameMenuMaskActive.SetActive(true);
 	}
 	
 	private void deActivatorMumbleDialogue(){
 		mumbleDialogue.SetActive(false);
-		gameMenuMaskActive.SetActive(true);
 	}
 
 	private void revealMasks(GameObject maskToReveal){
@@ -574,6 +573,13 @@ public class MaskManager : MonoBehaviour
 		toSetInslotMask.transform.localScale = new Vector3(1,1,1);
 		toSetInslotMask.GetComponent<Button>().interactable = false;
 		toSetInslotMask.GetComponent<Draggable>().enabled = false;
+	}
+
+	public void setAssistentMarker(){
+		GameObject temp;
+		temp = GameObject.Find(CulpritAssistant.name + "UI");
+		assistantMarker.transform.position = temp.transform.position;
+		
 	}
 
 	public void setUIRevealedPerson(GameObject maskToReveal){
